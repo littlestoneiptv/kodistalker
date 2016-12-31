@@ -1,0 +1,2 @@
+v1.0.1 (2016-12-31) - Added password field
+v1.0.0 Initial Release - Based on IPTV Stalker Plus Lite

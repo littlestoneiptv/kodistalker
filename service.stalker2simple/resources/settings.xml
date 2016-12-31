@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<settings>
+    <!-- General -->
+    <category id="general" label="32010">
+        <setting id="portalnum" type="labelenum" label="33000" values="1|2|3" default="1" visible="true"/>
+		<setting id="xmltv_url" type="text" label="33003" default="" visible="true"/>
+        <setting id="mergem3u" type="bool" label="33005" default="false"/>
+        <setting id="mergem3u_fn" type="file" label="33006" default="" visible="eq(-1,true)"/>
+        <setting id="timezone" type="slider" label="33002" range="-12,0.25,12" default="0" option="float"/>
+        <setting id="debug" type="bool" label="32100" default="false"/>
+        <setting id="offset1hr" type="bool" label="32101" default="false" visible="false"/>
+        <setting id="install_keyboard_file" type="bool" label="32102" default="false"/>
+
+  		<setting id="enable_scheduler" type="bool" label="30060" default="true" enable="true"/>
+  		<setting id="schedule_interval" type="enum" label="30061" lvalues="30079|30072|30073|30074|30075" default="1" enable="eq(-1,true)" visible="false"/>
+  		<setting id="schedule_time" type="labelenum" label="30062" values="00:00|01:00|02:00|03:00|04:00|05:00|06:00|07:00|08:00|09:00|10:00|11:00|12:00|13:00|14:00|15:00|16:00|17:00|18:00|19:00|20:00|21:00|22:00|23:00" default="07:00" visible="false"  enable="eq(-2,true)" />
+  		<setting id="day_of_week" type="enum" label="30063" lvalues="30065|30066|30067|30068|30069|30070|30071" default="0" visible="eq(-2,2)"  enable="eq(-3,true)" />
+  		<setting id="cron_schedule" type="text" label="30064" default="0 0 * * *" visible="false"  enable="eq(-4,true)" />
+        <setting id="group_list" type="text" label="40002" default="ENGLISH HD/UHD,ENGLISH SD,NEWS,KIDS,SPORTS HD/UHD,SPORTS PPV EVENTS,PREMIUM MOVIES,PPV MOVIES" visible="true" />
+        <setting id="correctepg" type="bool" label="40005" default="false"/>
+        <setting id="correcturl" type="text" label="40006" default="" visible="eq(-1,true)"/>
+        <setting id="excludech" type="bool" label="40007" default="false"/>
+        <setting id="excluderegex" type="text" label="40008" default="xxx$" visible="eq(-1,true)"/>
+
+        
+    </category>
+</settings>
