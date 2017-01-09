@@ -131,6 +131,12 @@ class MyHandler(BaseHTTPRequestHandler):
                         genre_id = i['genre_id']
                         logo = i['logo']
 
+                        if cmd == "http://":
+                            continue
+                        name = name.replace("&lt;", "<")
+                        name = name.replace("&gt;", ">")
+                        name = name.replace("&amp;", "&")
+
                         if logo != '':
                             logo = portal['url'] \
                                 + '/stalker_portal/misc/logos/320/' \

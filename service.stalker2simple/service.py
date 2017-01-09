@@ -232,6 +232,9 @@ class epgUpdater:
                         tvglogo = '{0}'.format(chlogo)
                           
                         name = '{0}'.format(chname.encode('utf8'))
+                        name = name.replace("&lt;", "<")
+                        name = name.replace("&gt;", ">")
+                        name = name.replace("&amp;", "&")
                         
                         if chfilter:
                             searchObj = re.search(chfilregex, name)

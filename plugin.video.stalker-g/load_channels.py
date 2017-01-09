@@ -308,9 +308,12 @@ def getGenres(
         alias = i['alias']
         id = i['id']
         title = i['title']
-        censored = str(i['censored'])
+        if 'censored' in i:
+            censored = '", "censored":"' + str(i['censored'])
+        else:
+            censored = ''
         data += '"' + id + '" : {"alias":"' + alias + '", "title":"' \
-            + title + '", "censored":"' + censored + '"}, \n'
+            + title + censored + '"}, \n'
 
     data = data[:-3] + '\n}}'
 
@@ -423,8 +426,11 @@ def getVoDCategories(
         alias = i['alias']
         id = i['id']
         title = i['title']
-        censored = str(i['censored'])
-        data += '"' + id + '" : {"alias":"' + alias + '", "title":"' + title + '", "censored":"' + censored + '"}, \n'
+        if 'censored' in i:
+            censored = '", "censored":"' + str(i['censored'])
+        else:
+            censored = ''
+        data += '"' + id + '" : {"alias":"' + alias + '", "title":"' + title + censored + '"}, \n'
     data = data[:-3] + '\n}}'
     with open(portalurl, 'w') as f:
         f.write(data.encode('utf-8'))
@@ -677,8 +683,14 @@ def getAllChannels(
     censored_genres = []
     
     for (id, i) in genres.iteritems():
-        if (i['censored']=="1"):
-            censored_genres.append(id)
+        title=i['title']
+        title2 = title.title()
+        if 'censored' in i:
+            if (i['censored']=="1"):
+                censored_genres.append(id)
+        else:
+            if ("adult" in title2.lower()) or ("sex" in title2.lower()):
+                censored_genres.append(id)
  
     values = {'type': 'itv', 'action': 'get_all_channels',
               'JsHttpRequest': '1-xml'}
@@ -695,8 +707,6 @@ def getAllChannels(
         id = i['id']
         data['channels'][id] = channel_data(i)
 
-    page = 1
-
     values = {
         'type': 'itv',
         'action': 'get_ordered_list',
@@ -706,6 +716,7 @@ def getAllChannels(
         'JsHttpRequest': '1-xml',
         }
     for cgenre in censored_genres:
+        page = 1
         values['genre']=cgenre
         if cgenre != None:
             while True:
@@ -789,23 +800,23 @@ def retrive_defaultUrl(url, channel, tmp):
 
     url = (s[1] if len(s) > 1 else s[0])
 
-    return url
-
-    # RETRIEVE THE 1 EXTM3U
-
-    request = urllib2.Request(url)
-    request.get_method = lambda : 'HEAD'
-    response = urllib2.urlopen(request)
-    data = response.read().decode('utf-8')
-
-    data = data.splitlines()
-    data = data[len(data) - 1]
-
-    # RETRIEVE THE 2 EXTM3U
-
-    url = response.geturl().split('?')[0]
-    url_base = url[:-(len(url) - url.rfind('/'))]
-    return url_base + '/' + data
+    return_url = url
+#
+#    # TRY RETRIEVE THE 1 EXTM3U
+#
+#    request = urllib2.Request(url)
+#    request.get_method = lambda : 'HEAD'
+#    response = urllib2.urlopen(request)
+#    data = response.read().decode('utf-8')
+#
+#    data = data.splitlines()
+#    if data[0]==u'#EXTM3U':
+#        data = data[len(data) - 1]
+#        # RETRIEVE THE 2 EXTM3U
+#        url = response.geturl().split('?')[0]
+#        url_base = url[:-(len(url) - url.rfind('/'))]
+#        return_url = url_base + '/' + data
+    return return_url
 
 
 def retrieve_matrixUrl(url, channel):

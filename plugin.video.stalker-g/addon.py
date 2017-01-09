@@ -123,8 +123,12 @@ def genreLevel():
             'portal': json.dumps(portal),
             })
 
-        genre_name = title.title()    
-        censored_genre = (i['censored']=="1")
+        genre_name = title.title()
+        if 'censored' in i:
+            censored_genre = (i['censored']=="1")
+        else:
+            censored_genre = ('adult' in genre_name.lower()) or ('sex' in genre_name.lower())
+
         adult_ok = portal['parental'] == 'true'
 
         if censored_genre:
@@ -366,13 +370,17 @@ def channelLevel():
 
     data = data['channels']
     genre_name = args.get('genre_name', None)
+    genre_name = genre_name[0]
     genre_id_main = args.get('genre_id', None)
     genre_id_main = genre_id_main[0]
     censored_genre_id_main = False
-    if genre_list[genre_id_main]['censored']=="1":
-        censored_genre_id_main = True
+    if 'censored' in genre_list[genre_id_main]:
+        censored_genre_id_main=(genre_list[genre_id_main]['censored']=="1")
+    else:
+        censored_genre_id_main=(("adult" in genre_name.lower()) or ("sex" in genre_name.lower()))
     
     adult_ok = portal['parental'] == 'true'
+    parentalapproved = False
 
     if censored_genre_id_main and adult_ok:
         result = xbmcgui.Dialog().input('Parental',
@@ -381,6 +389,8 @@ def channelLevel():
                 option=xbmcgui.PASSWORD_VERIFY)
         if not result:
             stop = True
+        else:
+            parentalapproved = True
 
     if stop == False:
         for i in data.values():
@@ -392,9 +402,15 @@ def channelLevel():
             genre_id = i['genre_id']
             logo = i['logo']
             
-            adult_genre = (genre_list[genre_id]['censored']=="1")
+            if 'censored' in genre_list[genre_id]:
+                adult_genre = (genre_list[genre_id]['censored']=="1")
+            else:
+                adult_genre=(("adult" in name.lower()) or ("sex" in name.lower()))
             
             if (adult_genre and not adult_ok):
+                continue
+                
+            if (adult_genre and parentalapproved == False):
                 continue
 
             if not (genre_id_main == genre_id or genre_id_main == '*'):
@@ -402,6 +418,10 @@ def channelLevel():
 
             logo_url = ('DefaultVideo.png' if not logo else portal['url'
                         ] + '/stalker_portal/misc/logos/320/' + logo)
+            
+            #skip empty link
+            if cmd == "http://":
+                continue
 
             try:
                 enc_name = name.encode('utf-8')
